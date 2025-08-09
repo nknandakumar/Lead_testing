@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Google Apps Script Test</title>
+	</head>
+	<body>
+		<h1>Google Apps Script Test</h1>
+
+		<h2>Test POST (Submit Lead)</h2>
+		<form id="testForm">
+			<input type="text" id="name" placeholder="Name" required /><br /><br />
+			<input type="email" id="email" placeholder="Email" required /><br /><br />
+			<input type="text" id="phone" placeholder="Phone" required /><br /><br />
+			<textarea id="message" placeholder="Message" required></textarea
+			><br /><br />
+			<button type="submit">Test Submit</button>
+		</form>
+
+		<h2>Test GET (Fetch Leads)</h2>
+		<button onclick="testGet()">Test Fetch Leads</button>
+
+		<div id="results"></div>
+
+		<script>
+			const SCRIPT_URL =
+				"https://script.google.com/macros/s/AKfycbzTHqHDGZgPwVKssuAqvci71vZoQueWh8zvOo-oBUQaT3n2mtDzRaP8nwXRVLIJgm7x/exec";
+
+			document
+				.getElementById("testForm")
+				.addEventListener("submit", async (e) => {
+					e.preventDefault();
+
+					const formData = {
+						name: document.getElementById("name").value,
+						email: document.getElementById("email").value,
+						phone: document.getElementById("phone").value,
+						message: document.getElementById("message").value,
+					};
+
+					try {
+						const response = await fetch(SCRIPT_URL, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify(formData),
+						});
+
+						const result = await response.text();
+						document.getElementById(
+							"results"
+						).innerHTML = `<h3>POST Result:</h3><pre>${result}</pre>`;
+					} catch (error) {
+						document.getElementById(
+							"results"
+						).innerHTML = `<h3>POST Error:</h3><pre>${error}</pre>`;
+					}
+				});
+
+			async function testGet() {
+				try {
+					const response = await fetch(SCRIPT_URL);
+					const result = await response.text();
+					document.getElementById(
+						"results"
+					).innerHTML = `<h3>GET Result:</h3><pre>${result}</pre>`;
+				} catch (error) {
+					document.getElementById(
+						"results"
+					).innerHTML = `<h3>GET Error:</h3><pre>${error}</pre>`;
+				}
+			}
+		</script>
+	</body>
+</html>
+
